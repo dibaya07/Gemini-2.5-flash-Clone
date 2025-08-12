@@ -8,37 +8,24 @@ import SlideBar from "./components/SlideBar";
 
 
 function App() {
-  
-   const [response, setResponse] = useState("");
-   const [prompt, setPrompt] = useState("");
-   const [historyTaker, setHistoryTaker] = useState([])
-   const [recentHistory, setRecentHistory] = useState(JSON.parse(localStorage.getItem("History")))
-  let handleRes = (resData)=>{
-    setResponse(resData)
-  }
 
-  let handlePrompt = (promptData)=>{
-    setPrompt(promptData)
-  }
-
-  let handleHistory = (promptData,resData)=>{
-   setHistoryTaker(historyTaker ? [...historyTaker,{role: "user", text:promptData ,id:uuidv4()},{role:'model', text:resData ,id:uuidv4()}]: {role: "user", text:promptData ,id:uuidv4()},{role:'model', text:resData ,id:uuidv4()}) 
-   
-  }
-
+  const [title, setTitle] = useState('')      
+  const [history, setHistory] = useState()
+  const [userPrompt, setuserPrompt] = useState("");
+  const [conversationId, setConversationId] = useState(null)
 
   return (
     <>
       <div className="germini  bg-[#28282B] h-screen flex">
         <div className="left-side w-64 text-white">
-          <SlideBar modelRes={response} displayPrompt={prompt} setPrompt={setPrompt} recentHistory={recentHistory}/>
+          <SlideBar title={title}/>
         </div>
         <div className="right-side flex flex-col flex-1">
           <Title />
           <div className="searchArea flex-grow  w-full flex flex-col justify-between  overflow-hidden">
-          <ChatArea displayPrompt={prompt} allHistory={historyTaker} />
+          <ChatArea history={history} />
           <span className="flex justify-center py-4">
-            <SearchArea searchRes={handleRes} modelRes={response} userPromptData={handlePrompt} displayPrompt={prompt} historyHandler={handleHistory} allHistory={historyTaker} recentHistory={recentHistory} setRecentHistory={setRecentHistory}/>
+            <SearchArea userPrompt={userPrompt} setuserPrompt={setuserPrompt} conversationId={conversationId} setConversationId={setConversationId} history={history} setHistory={setHistory} setTitle={setTitle}/>
           </span>
           </div>
         </div>
@@ -49,13 +36,3 @@ function App() {
 
 export default App;
 
-
-//  results={historyTaker}
-
-//    let handleHistory =()=>{
-//     setHistoryTaker(...historyTaker,{prompt,response})
-//   }
-
-//    historyHandler={handleHistory}
-
-// modelRes={response} displayPrompt={prompt}

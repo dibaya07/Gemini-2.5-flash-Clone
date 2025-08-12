@@ -6,7 +6,7 @@ const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 async function generativeAIResponse(titlePrompt) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents:{titlePrompt},
+    contents:titlePrompt,
     config: {
       thinkingConfig: {
         thinkingBudget: 0, // Disables thinking
@@ -17,4 +17,4 @@ async function generativeAIResponse(titlePrompt) {
   return response.text
 }
 
-module.exports= generativeAIResponse
+module.exports= {generativeAIResponse}

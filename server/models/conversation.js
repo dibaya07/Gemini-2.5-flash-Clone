@@ -1,10 +1,10 @@
 const mongoose = require("mongoose")
 
 const conversationSchema=mongoose.Schema({
-    sessionId:{
-        type:String,
-        required:true,
-    },
+    // sessionId:{
+    //     type:String,
+    //     required:true,
+    // },
     title:{
         type:String,
         default:"New Chat"

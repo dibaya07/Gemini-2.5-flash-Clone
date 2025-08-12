@@ -7,9 +7,12 @@ const connectDB= require("./config/connectDB.js")
 
 connectDB()
 
-app.get('/', (req, res) => {
-  res.json({message:'Hello World!'})
-})
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+app.use("/chat", require("./route/chatRoute.js"))
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

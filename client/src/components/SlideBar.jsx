@@ -5,7 +5,10 @@ import { FaEdit } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import { v4 as uuidv4 } from "uuid";
 
-export default function SlideBar({ setPrompt, recentHistory }) {
+export default function SlideBar({ title }) {
+
+
+  
   const handleclick = (qsn) => {
     setPrompt(qsn);
   };
@@ -27,8 +30,8 @@ export default function SlideBar({ setPrompt, recentHistory }) {
       </span>
       <span className="overflow-y-scroll">
         <ul>
-          {recentHistory &&
-            recentHistory.map((item) => {
+          {/* {
+            title.map((item) => {
               return (
                 <li
                   key={uuidv4()}
@@ -38,7 +41,8 @@ export default function SlideBar({ setPrompt, recentHistory }) {
                   {item}
                 </li>
               );
-            })}
+            })} */}
+            {title}
         </ul>
       </span>
       <span className="absolute bottom-1 flex items-center my-6 text-lg h-11 w-60  bg-[#3e3e3f] rounded-3xl px-6 mx-2">
