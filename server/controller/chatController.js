@@ -42,6 +42,10 @@ const sendMessage = async (req, res) => {
     contents: history,
   });
 
+  // for await (const chunk of response) {
+  //   console.log(chunk.text);
+  // }
+
   const modelResponse = result.text;
 
   await Message.create({

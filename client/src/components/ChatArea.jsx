@@ -3,7 +3,7 @@ import "../../src/components/ChatArea.css";
 
 import { v4 as uuidv4 } from "uuid";
 
-export default function ChatArea({ history }) {
+export default function ChatArea({ history,recentPrompt }) {
   return (
     <div className="flex-grow  overflow-y-scroll scrollbar-hide">
 
@@ -25,6 +25,18 @@ export default function ChatArea({ history }) {
             )
           );
         })}
+        {
+          recentPrompt &&  <><div className="flex justify-end px-4 py-2  w-3/4" >
+                <li className="text-white w-fit px-2 text-xl font-normal bg-[#3e3e3f] text-end  flex-wrap">
+                  {recentPrompt}
+                </li>
+              </div>
+              <div className="flex justify-start px-4 py-2  w-3/4" key={uuidv4()}>
+                <li className="text-white w-fit px-2 text-xl font-normal bg-[#3e3e3f]  flex-wrap">
+                  Thinking ...
+                </li>
+              </div></>
+        }
       </ul>
     </div>
   );

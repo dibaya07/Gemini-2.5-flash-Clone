@@ -2,16 +2,19 @@ import React, { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { IoSend } from "react-icons/io5";
 import axios from 'axios';
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
 
-const SearchArea = ({userPrompt,setuserPrompt,conversationId,setConversationId,setHistory,setTitle}) => {
+const SearchArea = ({userPrompt,setuserPrompt,conversationId,setConversationId,setHistory,setTitle,recentPrompt,setRecentPrompt}) => {
 
-  const handleclick = async()=>{
+  const handleClick = async()=>{
+    setRecentPrompt(userPrompt)
+    setuserPrompt("")
     await axios.post(`${import.meta.env.VITE_API_URL}/chat`,{conversationId,userPrompt})
     .then((res)=>{
       setConversationId(res.data.conversation._id)
       setHistory(res.data.history)
+      setRecentPrompt('')
       setTitle(res.data.conversation.title)
     })
   }
@@ -34,7 +37,7 @@ const SearchArea = ({userPrompt,setuserPrompt,conversationId,setConversationId,s
           <span className="ml-7 text-3xl">
             <IoMdAdd />
           </span>
-          <button onClick={handleclick} className="mr-7 text-3xl">
+          <button onClick={handleClick} className="mr-7 text-3xl">
             <IoSend />
           </button>
         </div>
