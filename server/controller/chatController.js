@@ -8,20 +8,24 @@ const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
 const sendMessage = async (req, res) => {
   const { conversationId, userPrompt } = req.body;
+  const userId = req.user?.id
 
 //   console.log(req.body);
 
 
   let conversation = conversationId
-    ? await Conversation.findById(conversationId)
+    ? await Conversation.findById(conversationId).populate("user")
     : null;
   if (!conversation) {
        const titlePrompt = `Summarize the following message into a short conversation title (max 5 words): "${userPrompt}"`
         const aiTitle= await generativeAIResponse(titlePrompt)
-        console.log(aiTitle)
-    conversation = await Conversation.create({ title: aiTitle });
+        // console.log(aiTitle)
+    conversation = await Conversation.create({user:userId, title: aiTitle });
+    conversation = await Conversation.findById(conversation._id).populate("user")
+    // console.log("chatController",conversation)
   }
 
+  console.log("populate.....",conversation)
   await Message.create({
     conversationId: conversation._id,
     role: "user",
@@ -41,10 +45,6 @@ const sendMessage = async (req, res) => {
     model: "gemini-2.5-flash",
     contents: history,
   });
-
-  // for await (const chunk of response) {
-  //   console.log(chunk.text);
-  // }
 
   const modelResponse = result.text;
 

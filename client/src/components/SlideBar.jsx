@@ -5,9 +5,15 @@ import { FaEdit } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import { v4 as uuidv4 } from "uuid";
 
-export default function SlideBar({ title }) {
+export default function SlideBar({ title ,setHistory,setRecentPrompt,setuserPrompt,conversationId,setConversationId,userName, setUserName}) {
 
-
+const handleNewChatClick=()=>{
+  setHistory([])
+  setRecentPrompt('')
+setuserPrompt('')
+setConversationId(null)
+console.log(userName)
+}
   
   const handleclick = (qsn) => {
     setPrompt(qsn);
@@ -24,25 +30,26 @@ export default function SlideBar({ title }) {
         </button>
       </div>
 
-      <span className="m-6 flex items-center">
+      <span className="m-6 flex items-center bg-red-600 cursor-pointer" onClick={handleNewChatClick}>
         <FaEdit className="mr-3" />
         New Chat
       </span>
       <span className="overflow-y-scroll">
         <ul>
-          {/* {
-            title.map((item) => {
+          {
+            title.map((item,idx) => {
               return (
                 <li
-                  key={uuidv4()}
+                  key={idx}
                   className="bg-gray-900 my-2 cursor-pointer rounded-2xl px-3 py-2 mx-1"
-                  onClick={() => handleclick(item)}
+                  // onClick={() => handleclick(item)}
                 >
                   {item}
                 </li>
               );
-            })} */}
-            {title}
+            })}
+            {/* {title} */}
+            {/* {console.log(title)} */}
         </ul>
       </span>
       <span className="absolute bottom-1 flex items-center my-6 text-lg h-11 w-60  bg-[#3e3e3f] rounded-3xl px-6 mx-2">

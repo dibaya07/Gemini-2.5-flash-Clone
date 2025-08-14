@@ -21,7 +21,7 @@ const userSignUp = async (req, res) => {
     { username, id: newUser._id },
     process.env.TOKEN_KEY
   );
-  res.cookie("token", token, {
+  res.cookie("gemini-token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
@@ -37,22 +37,25 @@ const userLogin = async (req, res) => {
   }
 
   let user = await User.findOne({ email });
+   if (!user) {
+    return res.status(400).json({ message: "user not found" });
+  }
   if (user && (await bcrypt.compare(password, user.password))) {
     let token = jwt.sign({ email, id: user._id }, process.env.TOKEN_KEY);
-    res.cookie("token", token, {
+    res.cookie("gemini-token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    return res.json({ token, message: "success" });
+    return res.json({ token, message: "login success", user });
   } else {
     return res.status(500).json({ message: " wrong password" });
   }
 };
 
 const userLogout = (req, res) => {
-  res.clearCookie("token", {
+  res.clearCookie("gemini-token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
