@@ -1,27 +1,44 @@
 import React, { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { IoSend } from "react-icons/io5";
-import axios from 'axios';
+import axios from "axios";
 // import { useEffect } from "react";
 
-
-const SearchArea = ({userPrompt,setuserPrompt,conversationId,setConversationId,setHistory,setTitle,recentPrompt,setRecentPrompt,userName, setUserName}) => {
-
-  const handleclick = async()=>{
-     setRecentPrompt(userPrompt)
-    setuserPrompt("")
-    await axios.post(`${import.meta.env.VITE_API_URL}/chat`,{conversationId,userPrompt},{
-        withCredentials: true,
-      })
-    .then((res)=>{
-      setConversationId(res.data.conversation._id)
-      setHistory(res.data.history)
-       setRecentPrompt("")
-      setTitle((prev =>[...prev,res.data.conversation.title]))
-      setUserName(res.data.conversation.user.userName)
-    })
-  }
-
+const SearchArea = ({
+  userPrompt,
+  setuserPrompt,
+  conversationId,
+  setConversationId,
+  setHistory,
+  setTitle,
+  recentPrompt,
+  setRecentPrompt,
+  userName,
+  setUserName,
+  isOldHistory,
+  setIsOldHistory,
+}) => {
+  const handleclick = async () => {
+    setRecentPrompt(userPrompt);
+    setuserPrompt("");
+    await axios
+      .post(
+        `${import.meta.env.VITE_API_URL}/chat`,
+        { conversationId, userPrompt },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        if (conversationId) {
+          setIsOldHistory(false);
+        }
+        setConversationId(res.data.conversation._id);
+        setRecentPrompt("");
+        setHistory(res.data.history);
+        setUserName(res.data.conversation.user.userName);
+      });
+  };
 
   return (
     <>
@@ -32,6 +49,12 @@ const SearchArea = ({userPrompt,setuserPrompt,conversationId,setConversationId,s
             type="text"
             placeholder="enter your text"
             value={userPrompt}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleclick();
+              }
+              // console.log(e.key)
+            }}
             onChange={(e) => setuserPrompt(e.target.value)}
           ></input>
         </div>

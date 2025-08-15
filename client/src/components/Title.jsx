@@ -7,36 +7,26 @@ import { useContext } from "react";
 import { AuthContext } from "./context.jsx";
 
 export default function Title() {
-  const [token, setToken] = useState(localStorage.getItem("gemini-token") || "");
+  const [token, setToken] = useState(
+    localStorage.getItem("gemini-token") || ""
+  );
   const [isLogin, setIsLogin] = useState(token ? true : false);
-  const { userName,setUserName } = useContext(AuthContext);
+  const { userName, setUserName } = useContext(AuthContext);
 
   // isLogin, setIsLogin, token, setToken,
   // const navigate = useNavigate()
 
-  // useEffect(async() => {
-  //   await axios.get(`${import.meta.env.VITE_API_URL}/user/${endpoints}`, data, {
-  //       withCredentials: true,
-  //     })
-  
-  //   return () => {
-  //     second
-  //   }
-  // }, [third])
-  
-  
   useEffect(() => {
     setIsLogin(token ? true : false);
   }, [token]);
 
-
-  const hadleLoginClick = ()=>{
-    if(token){
-      localStorage.removeItem("gemini-token")
-      setToken("")
-      setIsLogin(false)
+  const hadleLoginClick = () => {
+    if (token) {
+      localStorage.removeItem("gemini-token");
+      setToken("");
+      setIsLogin(false);
     }
-  }
+  };
   // const [currentpage, setCurrentpage] = useState("app")
   return (
     <div className="w-full  text-white flex justify-between ">
@@ -45,12 +35,16 @@ export default function Title() {
         <span>2.5 Flash</span>
         {/* {console.log(userName)} */}
       </div>
-      <Link className="flex items-center text-3xl px-4 cursor-pointer" role="Profile" to={isLogin ? "/":"/authForm"} onClick={hadleLoginClick}>
+      <Link
+        className="flex items-center text-3xl px-4 cursor-pointer"
+        role="Profile"
+        to={isLogin ? "/" : "/authForm"}
+        onClick={hadleLoginClick}
+      >
         {isLogin ? `log out${userName}` : <IoPersonCircle />}
       </Link>
     </div>
   );
 }
-
 
 // onClick={()=>navigate('/authForm')} className="cursor-pointer"
