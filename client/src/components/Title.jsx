@@ -12,9 +12,7 @@ export default function Title() {
   );
   const [isLogin, setIsLogin] = useState(token ? true : false);
   const { userName, setUserName } = useContext(AuthContext);
-
-  // isLogin, setIsLogin, token, setToken,
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
   useEffect(() => {
     setIsLogin(token ? true : false);
@@ -25,24 +23,23 @@ export default function Title() {
       localStorage.removeItem("gemini-token");
       setToken("");
       setIsLogin(false);
+    }else{
+      navigate("/authForm")
     }
   };
-  // const [currentpage, setCurrentpage] = useState("app")
   return (
     <div className="w-full  text-white flex justify-between ">
       <div className="flex flex-col p-4 font-medium text-lg">
         <span>Gemini</span>
         <span>2.5 Flash</span>
-        {/* {console.log(userName)} */}
       </div>
-      <Link
-        className="flex items-center text-3xl px-4 cursor-pointer"
+      <button
+        className="flex items-center text-2xl px-4 cursor-pointer"
         role="Profile"
-        to={isLogin ? "/" : "/authForm"}
         onClick={hadleLoginClick}
       >
-        {isLogin ? `log out${userName}` : <IoPersonCircle />}
-      </Link>
+        {isLogin ? `Log Out${userName}` : <IoPersonCircle />}
+      </button>
     </div>
   );
 }

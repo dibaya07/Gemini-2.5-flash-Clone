@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiThMenu } from "react-icons/ti";
 import { FaEdit } from "react-icons/fa";
@@ -7,6 +7,10 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { LuPanelLeftClose } from "react-icons/lu";
 import { LuPanelRightClose } from "react-icons/lu";
+import { useContext } from "react";
+import { AuthContext } from "./context.jsx";
+
+
 
 export default function SlideBar({
   history,
@@ -21,13 +25,15 @@ export default function SlideBar({
   setUserName,
   setIsOldHistory,
 }) {
+  
+  const { isSlideOpen,setIsSlideOpen } = useContext(AuthContext);
+
   const handleNewChatClick = () => {
     setHistory([]);
     setRecentPrompt("");
     setuserPrompt("");
     setConversationId(null);
     setIsOldHistory(false);
-    // console.log(userName)
   };
   let allTitles = async () => {
     await axios
@@ -36,45 +42,45 @@ export default function SlideBar({
       })
       .then((res) => {
         setTitle(res.data);
-        // console.log(res.data)
       });
   };
 
   useEffect(() => {
     allTitles();
   }, [history]);
-  // let conversationIdParams =""
 
   const handleTitleClick = async (conversationId) => {
-    // console.log(conversationId)
     setConversationId(conversationId);
     await axios
       .post(`${import.meta.env.VITE_API_URL}/chat/${conversationId}`)
       .then((res) => {
         setHistory(res.data);
         setIsOldHistory(true);
-        // conversationIdParams(conversationId)
-
-        // console.log(res.data)
       });
   };
 
-  // const handleSlideBar = () => {
-  //   setSlideBar(true);
-  // };
-  // useEffect(() => {
-  //   handleTitleClick(conversationIdParams)
-  // }, [])
+  const handleSlideBar = () => {
+    setIsSlideOpen(false);
+  };
 
   return (
-    <div className="h-screen flex flex-col bg-[#2f2f31]">
+    <>
+   <div className={`close-slider h-screen flex flex-col bg-[#2f2f31] opacity-75 ${isSlideOpen && "hidden"}`}>
+    <button className=" text-2xl mx-auto py-2 mt-4 cursor-pointer">
+    <LuPanelRightClose onClick={()=>setIsSlideOpen(prev => !prev)}/>
+    </button>
+    <button  className=" text-2xl mx-auto py-2 mt-4 cursor-pointer"  onClick={handleNewChatClick}>
+      <FaEdit />
+    </button>
+   </div>
+    <div className={`h-screen flex flex-col bg-[#2f2f31] ${!isSlideOpen && "hidden"}`}>
       <div className="line1 flex justify-between m-6">
         <button className="rounded-[50%] bg-[#3e3e3f] p-2 text-xl">
           <TiThMenu />
         </button>
-        <button className="rounded-[50%] bg-[#3e3e3f] p-2 text-xl cursor-pointer">
+        <button className="rounded-[50%] bg-[#3e3e3f] p-2 text-xl cursor-pointer" onClick={handleSlideBar}>
           <LuPanelLeftClose />
-          {/* <LuPanelRightClose  className={`${slideBar ? "hidden" : "inline-block"}`} onClick={handleSlideBar}/> */}
+          
         </button>
       </div>
 
@@ -98,15 +104,10 @@ export default function SlideBar({
               </li>
             );
           })}
-          {/* {title} */}
-          {/* {console.log(title)} */}
         </ul>
       </span>
-      {/* <span className="absolute bottom-1 flex items-center my-6 text-lg h-11 w-60  bg-[#3e3e3f] rounded-3xl px-6 mx-2">
-        <IoSettingsSharp className="mr-3" />
-        Settings
-      </span> */}
       <div className=" w-full h-2 mt-auto" />
     </div>
+     </>
   );
 }

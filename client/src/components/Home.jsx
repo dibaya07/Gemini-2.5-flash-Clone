@@ -5,6 +5,9 @@ import ChatArea from "./ChatArea";
 import { v4 as uuidv4 } from "uuid";
 import SlideBar from "./SlideBar";
 
+import { useContext } from "react";
+import { AuthContext } from "./context.jsx";
+
 function Home() {
   const [title, setTitle] = useState([]);
   const [history, setHistory] = useState([]);
@@ -13,11 +16,17 @@ function Home() {
   // const [userName, setUserName] = useState("")
   const [conversationId, setConversationId] = useState(null);
   const [isOldHistory, setIsOldHistory] = useState(false);
+  const { isSlideOpen,setIsSlideOpen,showOption,setShowOption } = useContext(AuthContext);
 
+  const handleShowOptionClick = ()=>{
+    if(showOption){
+      setShowOption(false)
+    }
+  }
   return (
     <>
-      <div className="germini  bg-[#28282B] h-screen flex">
-        <div className="left-side w-64 text-white">
+      <div className="germini  bg-[#28282B] h-screen flex" onClick={handleShowOptionClick}>
+        <div className={`left-side text-white ${!isSlideOpen ?  "w-12":"w-64"}`}>
           <SlideBar
             title={title}
             setHistory={setHistory}

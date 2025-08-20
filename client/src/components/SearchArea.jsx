@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { IoSend } from "react-icons/io5";
 import axios from "axios";
+import { HiPaperClip } from "react-icons/hi";
+import { IoCloseSharp } from "react-icons/io5";
+import { useContext } from "react";
+import { AuthContext } from "./context.jsx";
+import TextareaAutosize from 'react-textarea-autosize';
+
+
 // import { useEffect } from "react";
 
 const SearchArea = ({
@@ -18,9 +25,25 @@ const SearchArea = ({
   isOldHistory,
   setIsOldHistory,
 }) => {
+
+  const [isSubmit, setIsSubmit] = useState(false)
+  const [file, setFile] = useState(null)
+  const [previewFile, setPreviewFile] = useState(null)
+    const { showOption,setShowOption } = useContext(AuthContext);
+
+  const handleChange = (e)=>{
+    setShowOption(prev=>!prev)
+    let seletedFile =e.target.files[0]
+    setFile(seletedFile)
+    const url = URL.createObjectURL(seletedFile)
+    setPreviewFile(url)
+  }
+
+
   const handleclick = async () => {
     setRecentPrompt(userPrompt);
     setuserPrompt("");
+    setIsSubmit(true)
     await axios
       .post(
         `${import.meta.env.VITE_API_URL}/chat`,
@@ -42,10 +65,19 @@ const SearchArea = ({
 
   return (
     <>
-      <div className="h-36 w-3/4 bg-transparent rounded-3xl border border-solid border-white text-white flex flex-col justify-center">
-        <div className="input h-1/4 w-full flex justify-center items-center my-4">
-          <input
-            className="h-4/5 w-11/12 text-white bg-transparent "
+      <div className="h-fit w-3/4 bg-transparent rounded-3xl border border-solid border-white text-white flex flex-col justify-center">
+      {
+        previewFile && <div className="bg-red-500 overflow-hidden h-24 w-36 m-3 rounded-md relative">
+          <IoCloseSharp size={18} className="absolute top-0 right-0 m-2 bg-white text-black rounded-full" onClick={()=>setPreviewFile(null)}/>
+          <img src={previewFile} alt="uploaded image" />
+        </div>
+      }
+        <div className="input h-1/4 w-full flex justify-center items-center my-2">
+          <TextareaAutosize
+            className="h-4/5 w-11/12 text-white bg-transparent outline-none resize-none  overflow-y-auto min-h-8 max-h-32"
+            
+            minRows={1}
+            maxRows={5}
             type="text"
             placeholder="enter your text"
             value={userPrompt}
@@ -53,16 +85,24 @@ const SearchArea = ({
               if (e.key === "Enter") {
                 handleclick();
               }
-              // console.log(e.key)
             }}
             onChange={(e) => setuserPrompt(e.target.value)}
-          ></input>
+          />
         </div>
 
-        <div className="submitBtn w-full text-center flex justify-between items-center my-4">
-          <span className="ml-7 text-3xl">
+        <div className="submitBtn w-full text-center flex justify-between items-center my-2 relative">
+          <span className="ml-7 text-3xl cursor-pointer" onClick={()=>setShowOption((prev)=>!prev)}>
             <IoMdAdd />
           </span>
+          {
+            showOption && <div className="bg-gray-700 absolute left-9 bottom-10 rounded-lg p-2" onClick={(e)=>e.stopPropagation()}> 
+              <label className="cursor-pointer flex p-1 hover:bg-slate-500 rounded-lg" >
+             <HiPaperClip size={20} className="m-1"/>
+              <span className=" flex items-center ">Add photos and files</span>
+              <input type="file" name="image" accept="image/*,video/*" onChange={handleChange} className="hidden"/>
+              </label>
+            </div>
+          }
           <button onClick={handleclick} className="mr-7 text-3xl">
             <IoSend />
           </button>
