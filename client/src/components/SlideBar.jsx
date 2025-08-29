@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiThMenu } from "react-icons/ti";
 import { FaEdit } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { LuPanelLeftClose } from "react-icons/lu";
 import { LuPanelRightClose } from "react-icons/lu";
 import { useContext } from "react";
 import { AuthContext } from "./context.jsx";
+import ReactMarkdown from "react-markdown";
 
 
 
@@ -19,10 +19,7 @@ export default function SlideBar({
   setHistory,
   setRecentPrompt,
   setuserPrompt,
-  conversationId,
   setConversationId,
-  userName,
-  setUserName,
   setIsOldHistory,
 }) {
   
@@ -62,19 +59,20 @@ export default function SlideBar({
   const handleSlideBar = () => {
     setIsSlideOpen(false);
   };
-
+// bg-[#2f2f31]
   return (
     <>
-   <div className={`close-slider h-screen flex flex-col bg-[#2f2f31] opacity-75 ${isSlideOpen && "hidden"}`}>
-    <button className=" text-2xl mx-auto py-2 mt-4 cursor-pointer">
+   <div className={`close-slider md:h-screen h-[10vh] flex flex-col  rounded-full mt-1 md:mt-0 opacity-75 ${isSlideOpen && "hidden"}`}>
+    <button className=" text-2xl mx-auto py-2 md:mt-4 my-auto md:my-0 cursor-pointer">
     <LuPanelRightClose onClick={()=>setIsSlideOpen(prev => !prev)}/>
     </button>
-    <button  className=" text-2xl mx-auto py-2 mt-4 cursor-pointer"  onClick={handleNewChatClick}>
+    <button  className=" text-2xl mx-auto py-2 mt-4 cursor-pointer md:block hidden"  onClick={handleNewChatClick}>
       <FaEdit />
     </button>
    </div>
-    <div className={`h-screen flex flex-col bg-[#2f2f31] ${!isSlideOpen && "hidden"}`}>
-      <div className="line1 flex justify-between m-6">
+   
+    <div className={`h-screen flex absolute md:static w-[90vw] md:w-auto z-10 md:z-auto flex-col bg-[#2f2f31] ${!isSlideOpen && "hidden"}`}>
+      <div className="line1 flex justify-between mx-3 mt-2 md:m-6">
         <button className="rounded-[50%] bg-[#3e3e3f] p-2 text-xl">
           <TiThMenu />
         </button>
@@ -85,7 +83,7 @@ export default function SlideBar({
       </div>
 
       <span
-        className="m-6 flex items-center cursor-pointer"
+        className="md:m-6 mx-3 my-2 flex items-center cursor-pointer"
         onClick={handleNewChatClick}
       >
         <FaEdit className="mr-3" />
@@ -95,13 +93,15 @@ export default function SlideBar({
         <ul>
           {title.map((item, idx) => {
             return (
-              <li
+            
+               <li
                 key={idx}
-                className="bg-gray-900 my-2 cursor-pointer rounded-2xl px-3 py-2 mx-1 whitespace-nowrap overflow-hidden text-ellipsis"
+                className="bg-gray-800 hover:bg-white hover:bg-opacity-20 my-2 cursor-pointer rounded-2xl px-3 py-2 mx-1 whitespace-nowrap overflow-hidden text-sm text-ellipsis"
                 onClick={() => handleTitleClick(item.conversationId)}
               >
-                {item.title}
+               <ReactMarkdown>{item.title}</ReactMarkdown> 
               </li>
+         
             );
           })}
         </ul>

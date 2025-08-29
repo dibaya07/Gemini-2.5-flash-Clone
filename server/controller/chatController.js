@@ -48,6 +48,7 @@ const sendMessage = async (req, res) => {
   });
 
   const modelResponse = result.text;
+  // console.log("modelres ln 51",modelResponse)
 
   await Message.create({
     conversationId: conversation._id,
@@ -60,7 +61,9 @@ const sendMessage = async (req, res) => {
     parts: [{ text: modelResponse }],
   });
 
-  return res.json({ conversation, history });
+  // console.log("line 64 history", history)
+
+  return res.json({ conversation,modelResponse, history });
 };
 
 //may be delete later

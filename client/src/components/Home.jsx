@@ -2,7 +2,6 @@ import { useState } from "react";
 import SearchArea from "./SearchArea";
 import Title from "./Title";
 import ChatArea from "./ChatArea";
-import { v4 as uuidv4 } from "uuid";
 import SlideBar from "./SlideBar";
 
 import { useContext } from "react";
@@ -26,7 +25,8 @@ function Home() {
   return (
     <>
       <div className="germini  bg-[#28282B] h-screen flex" onClick={handleShowOptionClick}>
-        <div className={`left-side text-white ${!isSlideOpen ?  "w-12":"w-64"}`}>
+        <div className={`left-side md:static absolute  text-white ${!isSlideOpen ?  "w-12":"w-64"}`}>
+           {/* md:h-auto h-[10vh] */}
           <SlideBar
             title={title}
             setHistory={setHistory}
@@ -41,6 +41,7 @@ function Home() {
         </div>
         <div className="right-side flex flex-col flex-1">
           <Title />
+          <hr className="opacity-70"/>
           <div className="searchArea flex-grow  w-full flex flex-col justify-between  overflow-hidden">
             <ChatArea
               history={history}
@@ -50,7 +51,7 @@ function Home() {
               isOldHistory={isOldHistory}
               setIsOldHistory={setIsOldHistory}
             />
-            <span className="flex justify-center py-4">
+            <span className="flex justify-center pb-4 py-1">
               <SearchArea
                 userPrompt={userPrompt}
                 setuserPrompt={setuserPrompt}

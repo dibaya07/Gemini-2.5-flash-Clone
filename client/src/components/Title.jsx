@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { IoPersonCircle } from "react-icons/io5";
@@ -29,7 +29,7 @@ export default function Title() {
   };
   return (
     <div className="w-full  text-white flex justify-between ">
-      <div className="flex flex-col p-4 font-medium text-lg">
+      <div className="flex flex-col px-4 py-1 font-medium text-base ml-10 md:ml-0">
         <span>Gemini</span>
         <span>2.5 Flash</span>
       </div>

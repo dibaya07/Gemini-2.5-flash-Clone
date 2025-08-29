@@ -6,12 +6,15 @@ const verifyToken = async (req, res, next) => {
 
   if (!token) {
     console.log("in auth.js token is missing");
-    return res.status(400).json({ message: "maybe token is missing" });
+    // return res.status(400).json({ message: "maybe token is missing" });
+     req.token = false
+     next()
   }
   jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
     if (err) {
       res.status(400).json({ message: "maybe invalid token " });
     } else {
+        req.token = true
       req.user = decoded;
       next();
     }
