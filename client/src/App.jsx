@@ -1,10 +1,9 @@
 import { useState } from "react";
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AuthForm from "./components/AuthForm";
-import Home from "./components/Home";
+import AuthForm from "./components/AuthForm.jsx";
+import Home from "./components/Home.jsx";
 
-// /components/authForm
 function App() {
 
   const router = createBrowserRouter([
