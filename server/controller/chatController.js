@@ -9,7 +9,7 @@ const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
 const sendMessage = async (req, res) => {
   const { conversationId, userPrompt } = req.body;
-  const userId = req.user?.id; 
+  const userId = req.user?.id || null; 
 
   // console.log(conversationId);
 
@@ -70,10 +70,10 @@ const sendMessage = async (req, res) => {
 //may be delete later
 const getMessage = async (req, res) => {
   try{
-    const userId = req.user?.id;
-    if(!userId){
-      return res.json([])
-    }
+    const userId = req.user?.id || null;
+    // if(!userId){
+    //   return res.json([])
+    // }
   let conversation = await Conversation.find({ user: userId });
   let allTitle = conversation.map((item) => ({
     title: item.title,
