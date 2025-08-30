@@ -43,7 +43,7 @@ const SearchArea = ({
     await axios
       .post(
         `${import.meta.env.VITE_API_URL}/chat`,
-        { conversationId, userPrompt },
+        { conversationId, userPrompt }, 
         {
           withCredentials: true,
         }
@@ -79,7 +79,8 @@ const SearchArea = ({
             placeholder="enter your text"
             value={userPrompt}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault()
                 handleclick();
               }
             }}

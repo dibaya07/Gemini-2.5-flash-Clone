@@ -29,22 +29,20 @@ export default function SlideBar({
     setHistory([]);
     setRecentPrompt("");
     setuserPrompt("");
-    setConversationId(null);
+    setConversationId(null); 
     setIsOldHistory(false);
   };
-  let allTitles = async () => {
-    await axios
+  const allTitles = async () => {
+    const res = await axios
       .get(`${import.meta.env.VITE_API_URL}/chat`, {
         withCredentials: true,
       })
-      .then((res) => {
-        setTitle(res.data);
-      });
+        setTitle(res.data);    
   };
 
   useEffect(() => {
     allTitles();
-  }, [history]);
+  }, []);
 
   const handleTitleClick = async (conversationId) => {
     setConversationId(conversationId);

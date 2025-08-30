@@ -3,6 +3,7 @@ const Message = require("../models/messages");
 const { v4: uuidv4 } = require("uuid");
 const { GoogleGenAI } = require("@google/genai");
 const { generativeAIResponse } = require("../utility/generateTitle.js");
+const messages = require("../models/messages");
 
 const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
@@ -68,23 +69,32 @@ const sendMessage = async (req, res) => {
 
 //may be delete later
 const getMessage = async (req, res) => {
-  //   const { id } = req.params;
-  //   const pastMessages = await Message.find({
-  //     conversationId: id,
-  //   }).sort({ createdAt: 1 });
-  // //   console.log(pastMessages);
-  // console.log("get title users " ,req.user.id)
-  const userId = req.user?.id;
+  try{
+    const userId = req.user?.id;
+    if(!userId){
+      return res.json([])
+    }
   let conversation = await Conversation.find({ user: userId });
-  let allTitle = await conversation.map((item) => ({
+  let allTitle = conversation.map((item) => ({
     title: item.title,
     conversationId: item._id,
   }));
-  // let conversationId = conversation.map(item=> item._id)
-
+  
   res.json(allTitle);
-  // console.log("get title users conversationsID" , allTitle)
+  }
+  catch{
+    console.log("chatController line 85 error")
+    res.json({message:"titles are empty"})
+  }
 };
+//   const { id } = req.params;
+//   const pastMessages = await Message.find({
+//     conversationId: id,
+//   }).sort({ createdAt: 1 });
+// //   console.log(pastMessages);
+// console.log("get title users " ,req.user.id)
+// let conversationId = conversation.map(item=> item._id)
+// console.log("get title users conversationsID" , allTitle)
 
 const allMessages = async (req, res) => {
   const { id } = req.params;
