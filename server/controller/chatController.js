@@ -8,7 +8,8 @@ const messages = require("../models/messages");
 const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
 const sendMessage = async (req, res) => {
-  const { conversationId, userPrompt } = req.body;
+try{
+    const { conversationId, userPrompt } = req.body;
   const userId = req.user?.id || null; 
 
   // console.log(conversationId);
@@ -57,7 +58,7 @@ const sendMessage = async (req, res) => {
     content: modelResponse,
   });
 
-  await history.push({
+  history.push({
     role: "model",
     parts: [{ text: modelResponse }],
   });
@@ -65,6 +66,11 @@ const sendMessage = async (req, res) => {
   // console.log("line 64 history", history)
 
   return res.json({ conversation,modelResponse, history });
+}
+catch(error){
+  console.log(error, "line 71 chat controller post method error ")
+  res.json({message:"post method error in ln 71"})
+}
 };
 
 //may be delete later
