@@ -1,10 +1,10 @@
 import { useState } from "react";
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AuthForm from "./components/authForm";
+import AuthForm from "./components/AuthForm";
 import Home from "./components/Home";
 
-
+// /components/authForm
 function App() {
 
   const router = createBrowserRouter([
