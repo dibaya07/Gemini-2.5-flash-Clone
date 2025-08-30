@@ -12,7 +12,10 @@ const verifyToken = async (req, res, next) => {
   }
   jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
     if (err) {
-      res.status(400).json({ message: "maybe invalid token " });
+      // res.status(400).json({ message: "maybe invalid token " });
+      console.log("in line 16 invalid token in auth.js")
+      req.token = false
+     next()
     } else {
         req.token = true
       req.user = decoded;
