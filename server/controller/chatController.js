@@ -8,7 +8,7 @@ const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
 const sendMessage = async (req, res) => {
   const { conversationId, userPrompt } = req.body;
-  const userId = req.user?.id;
+  const userId = req.user?.id; 
 
   // console.log(conversationId);
 

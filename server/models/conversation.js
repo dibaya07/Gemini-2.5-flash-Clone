@@ -8,7 +8,7 @@ const conversationSchema=mongoose.Schema({
     user:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"User",
-            required:true,
+            // required:true,
         },
     title:{
         type:String,

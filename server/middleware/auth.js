@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const verifyToken = async (req, res, next) => {
   // console.log(req.cookies )
   let token = req.cookies["gemini-token"];
-
+ 
   if (!token) {
     console.log("in auth.js token is missing");
     // return res.status(400).json({ message: "maybe token is missing" });
