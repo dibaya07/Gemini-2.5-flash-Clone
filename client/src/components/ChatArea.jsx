@@ -66,12 +66,12 @@ export default function ChatArea({
         })}
         {recentPrompt && (
           <>
-            <div className="flex justify-end px-4 py-2  w-3/4">
+            <div className="flex justify-end px-4 py-2  md:w-3/4 w-[90vw]">
               <li className="text-white w-fit px-2 text-base font-normal bg-[#3e3e3f] text-end  flex-wrap">
                 {recentPrompt}
               </li>
             </div>
-            <div className="flex justify-start px-4 py-2  w-3/4">
+            <div className="flex justify-start px-4 py-2  md:w-3/4 w-[90vw]">
               <li className="text-white w-fit px-2 text-base font-normal bg-[#3e3e3f]  flex-wrap">
                 Thinking ...
               </li>

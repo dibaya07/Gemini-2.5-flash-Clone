@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "./context.jsx";
@@ -9,7 +9,7 @@ export default function AuthForm() {
   const [error, setError] = useState("");
   const [isSignUp, setIsSignUp] = useState(true);
   const navigate = useNavigate();
-   const { isLogin, setIsLogin, token, setToken,userName,setUserName } = useContext(AuthContext);
+   const { setIsLogin,setUserName } = useContext(AuthContext);
 
   const handleChange = (e) => {
     try {
@@ -29,7 +29,7 @@ export default function AuthForm() {
       })
       .then((res) => {
         localStorage.setItem("gemini-token", res.data.token);
-        // console.log(res.data.user.username)
+        console.log(res.data.user.username)
         setUserName(res.data.user.username)
         // setToken(res.data.token);
         setIsLogin(true);
