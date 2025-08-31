@@ -106,7 +106,7 @@ export default function AuthForm() {
           </span>
         </div>
       </div>
-    <button onClick={()=>navigate('/')} className="bg-black text-white">Back</button>
+    <button onClick={()=>navigate('/')} className="bg-black text-white px-6 py-2 my-2 rounded-md font-semibold text-base bg-opacity-75 hover:bg-opacity-100">Back</button>
     </div>
    </>
   );

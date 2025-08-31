@@ -60,8 +60,8 @@ export default function SlideBar({
 // bg-[#2f2f31]
   return (
     <>
-   <div className={`close-slider md:h-screen h-[10vh] flex flex-col  rounded-full mt-1 md:mt-0 opacity-75 ${isSlideOpen && "hidden"}`}>
-    <button className=" text-2xl mx-auto py-2 md:mt-4 my-auto md:my-0 cursor-pointer">
+   <div className={`close-slider md:h-screen h-[10vh] flex flex-col  rounded-full mt-1 md:mt-0 opacity-75 ${isSlideOpen && "md:hidden flex"}`}>
+    <button className=" text-2xl mx-auto md:mt-4 my-auto md:my-0 cursor-pointer">
     <LuPanelRightClose onClick={()=>setIsSlideOpen(prev => !prev)}/>
     </button>
     <button  className=" text-2xl mx-auto py-2 mt-4 cursor-pointer md:block hidden"  onClick={handleNewChatClick}>
@@ -69,7 +69,7 @@ export default function SlideBar({
     </button>
    </div>
    
-    <div className={`h-screen flex absolute md:static w-[90vw] md:w-auto z-10 md:z-auto flex-col bg-[#2f2f31] ${!isSlideOpen && "hidden"}`}>
+    <div className={`h-screen md:flex hidden absolute md:static w-[90vw] md:w-auto z-10 md:z-auto flex-col bg-[#2f2f31] ${!isSlideOpen && "hidden"}`}>
       <div className="line1 flex justify-between mx-3 mt-2 md:m-6">
         <button className="rounded-[50%] bg-[#3e3e3f] p-2 text-xl">
           <TiThMenu />

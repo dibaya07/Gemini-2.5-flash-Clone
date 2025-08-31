@@ -24,7 +24,7 @@ function Home() {
   return (
     <>
       <div className="germini  bg-[#28282B] h-screen flex" onClick={handleShowOptionClick}>
-        <div className={`left-side md:static absolute  text-white ${!isSlideOpen ?  "w-12":"w-64"}`}>
+        <div className={`left-side md:static absolute  text-white ${!isSlideOpen ?  "w-12":"md:w-64 w-12"}`}>
            {/* md:h-auto h-[10vh] */}
           <SlideBar
             title={title}
@@ -50,7 +50,7 @@ function Home() {
               isOldHistory={isOldHistory}
               setIsOldHistory={setIsOldHistory}
             />
-            <span className="flex justify-center pb-4 py-1">
+            <span className="flex justify-center pb-10 py-1">
               <SearchArea
                 userPrompt={userPrompt}
                 setuserPrompt={setuserPrompt}
