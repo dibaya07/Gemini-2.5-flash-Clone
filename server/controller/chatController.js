@@ -12,7 +12,7 @@ const sendMessage = async (req, res) => {
     const { conversationId, userPrompt } = req.body;
     const userId = req.user?.id || null;
 
-    console.log(userId, "ln 15 userid");
+    // console.log(userId, "ln 15 userid");
 
     let conversation = conversationId
       ? await Conversation.findById(conversationId).populate("user")
@@ -20,14 +20,16 @@ const sendMessage = async (req, res) => {
     if (!conversation) {
       const titlePrompt = `Summarize the following message into a short conversation title (max 5 words): "${userPrompt}"`;
       const aiTitle = await generativeAIResponse(titlePrompt);
-      // console.log(aiTitle)
+      // console.log("ln 23", conversation)
       conversation = await Conversation.create({
         user: userId,
         title: aiTitle,
       });
+      // console.log("ln 28", conversation)
       conversation = await Conversation.findById(conversation._id).populate(
         "user"
       );
+      // console.log("ln 32", conversation)
       // console.log("chatController",conversation)
     }
 
@@ -41,11 +43,13 @@ const sendMessage = async (req, res) => {
     const pastMessages = await Message.find({
       conversationId: conversation._id,
     }).sort({ createdAt: 1 });
+// console.log("ln 46 ", pastMessages)
 
-    const history = pastMessages.map((msg) => ({
-      role: msg.role === "user" ? "user" : "model",
-      parts: [{ text: msg.content }],
-    }));
+const history = pastMessages.map((msg) => ({
+  role: msg.role === "user" ? "user" : "model",
+  parts: [{ text: msg.content }],
+}));
+// console.log("ln 52 ", history)
 
     const result = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -66,19 +70,24 @@ const sendMessage = async (req, res) => {
       parts: [{ text: modelResponse }],
     });
 
-    // console.log("line 64 history", history)
-
+    // console.log("line 73 modelres", modelResponse)
+    // console.log("line 74 history", history)
+    console.log("sending response ...")
     return res.json({ conversation, modelResponse, history });
   } catch (error) {
     console.log(error, "line 71 chat controller post method error ");
-    return res.json({ message: "post method error in ln 71" });
+    if(!res.headersSent){
+      return res.status(500).json({ message: "post method error in ln 71" });
+    }
   }
 };
 
 //may be delete later
 const getMessage = async (req, res) => {
+  // console.log(req.user,"ln 82")
   try {
-    const userId = req.user?.id || null;
+    if(req.user){
+      const userId = req.user?.id || null;
     // if(!userId){
     //   return res.json([])
     // }
@@ -88,7 +97,12 @@ const getMessage = async (req, res) => {
       conversationId: item._id,
     }));
 
-    res.json(allTitle);
+    return res.json(allTitle);
+    }else{
+     return res.json([])
+    // console.log("ln 103 empty title array")
+    }
+    
   } catch {
     console.log("chatController line 85 error");
     res.json({ message: "titles are empty" });

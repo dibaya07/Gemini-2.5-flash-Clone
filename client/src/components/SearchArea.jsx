@@ -55,8 +55,8 @@ const SearchArea = ({
         setConversationId(res.data.conversation._id);
         setRecentPrompt("");
         setHistory(res.data.history);
-        console.log(res.data)
-        setUserName(res.data.conversation.user.userName);
+        // console.log(res.data)
+        // setUserName(res.data.conversation.user.userName);
       });
   };
 

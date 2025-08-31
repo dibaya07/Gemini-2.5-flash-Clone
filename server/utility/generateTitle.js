@@ -13,7 +13,7 @@ async function generativeAIResponse(titlePrompt) {
       },
     }
   });
-  console.log(response.text);
+  // console.log(response.text);
   return response.text
 }
 

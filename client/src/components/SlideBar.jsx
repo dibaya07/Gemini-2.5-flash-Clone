@@ -23,7 +23,7 @@ export default function SlideBar({
   setIsOldHistory,
 }) {
   
-  const { islogin,isSlideOpen,setIsSlideOpen } = useContext(AuthContext);
+  const { isLogin,isSlideOpen,setIsSlideOpen } = useContext(AuthContext);
 
   const handleNewChatClick = () => {
     setHistory([]);
@@ -42,7 +42,7 @@ export default function SlideBar({
 
   useEffect(() => {
     allTitles();
-  }, [history,islogin]);
+  }, [history,isLogin]);
 
   const handleTitleClick = async (conversationId) => {
     setConversationId(conversationId);
@@ -88,6 +88,7 @@ export default function SlideBar({
         New Chat
       </span>
       <span className="overflow-y-scroll h-96 ">
+        <span className="font-light text-sm mx-6 opacity-85">Chats {isLogin ? " " : "-(Need to login to save conversations)"}</span>
         <ul>
           {title.slice().reverse().map((item, idx) => {
             return (

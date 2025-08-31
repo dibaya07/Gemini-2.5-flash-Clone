@@ -3,7 +3,6 @@ import SearchArea from "./SearchArea";
 import Title from "./Title";
 import ChatArea from "./ChatArea";
 import SlideBar from "./SlideBar";
-
 import { useContext } from "react";
 import { AuthContext } from "./context.jsx";
 
