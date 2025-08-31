@@ -23,7 +23,7 @@ export default function SlideBar({
   setIsOldHistory,
 }) {
   
-  const { isSlideOpen,setIsSlideOpen } = useContext(AuthContext);
+  const { islogin,isSlideOpen,setIsSlideOpen } = useContext(AuthContext);
 
   const handleNewChatClick = () => {
     setHistory([]);
@@ -42,7 +42,7 @@ export default function SlideBar({
 
   useEffect(() => {
     allTitles();
-  }, []);
+  }, [history,islogin]);
 
   const handleTitleClick = async (conversationId) => {
     setConversationId(conversationId);
@@ -89,7 +89,7 @@ export default function SlideBar({
       </span>
       <span className="overflow-y-scroll h-96 ">
         <ul>
-          {title.map((item, idx) => {
+          {title.slice().reverse().map((item, idx) => {
             return (
             
                <li

@@ -8,89 +8,90 @@ const messages = require("../models/messages");
 const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
 const sendMessage = async (req, res) => {
-try{
+  try {
     const { conversationId, userPrompt } = req.body;
-  const userId = req.user?.id || null; 
+    const userId = req.user?.id || null;
 
-  // console.log(conversationId);
+    console.log(userId, "ln 15 userid");
 
-  let conversation = conversationId
-    ? await Conversation.findById(conversationId).populate("user")
-    : null;
-  if (!conversation) {
-    const titlePrompt = `Summarize the following message into a short conversation title (max 5 words): "${userPrompt}"`;
-    const aiTitle = await generativeAIResponse(titlePrompt);
-    // console.log(aiTitle)
-    conversation = await Conversation.create({ user: userId, title: aiTitle });
-    conversation = await Conversation.findById(conversation._id).populate(
-      "user"
-    );
-    // console.log("chatController",conversation)
+    let conversation = conversationId
+      ? await Conversation.findById(conversationId).populate("user")
+      : null;
+    if (!conversation) {
+      const titlePrompt = `Summarize the following message into a short conversation title (max 5 words): "${userPrompt}"`;
+      const aiTitle = await generativeAIResponse(titlePrompt);
+      // console.log(aiTitle)
+      conversation = await Conversation.create({
+        user: userId,
+        title: aiTitle,
+      });
+      conversation = await Conversation.findById(conversation._id).populate(
+        "user"
+      );
+      // console.log("chatController",conversation)
+    }
+
+    // console.log("populate.....",conversation)
+    await Message.create({
+      conversationId: conversation._id,
+      role: "user",
+      content: userPrompt,
+    });
+
+    const pastMessages = await Message.find({
+      conversationId: conversation._id,
+    }).sort({ createdAt: 1 });
+
+    const history = pastMessages.map((msg) => ({
+      role: msg.role === "user" ? "user" : "model",
+      parts: [{ text: msg.content }],
+    }));
+
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: history,
+    });
+
+    const modelResponse = result.text;
+    // console.log("modelres ln 51",modelResponse)
+
+    await Message.create({
+      conversationId: conversation._id,
+      role: "model",
+      content: modelResponse,
+    });
+
+    history.push({
+      role: "model",
+      parts: [{ text: modelResponse }],
+    });
+
+    // console.log("line 64 history", history)
+
+    return res.json({ conversation, modelResponse, history });
+  } catch (error) {
+    console.log(error, "line 71 chat controller post method error ");
+    return res.json({ message: "post method error in ln 71" });
   }
-
-  // console.log("populate.....",conversation)
-  await Message.create({
-    conversationId: conversation._id,
-    role: "user",
-    content: userPrompt,
-  });
-
-  const pastMessages = await Message.find({
-    conversationId: conversation._id,
-  }).sort({ createdAt: 1 });
-
-  const history = pastMessages.map((msg) => ({
-    role: msg.role === "user" ? "user" : "model",
-    parts: [{ text: msg.content }],
-  }));
-
-  const result = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: history,
-  });
-
-  const modelResponse = result.text;
-  // console.log("modelres ln 51",modelResponse)
-
-  await Message.create({
-    conversationId: conversation._id,
-    role: "model",
-    content: modelResponse,
-  });
-
-  history.push({
-    role: "model",
-    parts: [{ text: modelResponse }],
-  });
-
-  // console.log("line 64 history", history)
-
-  return res.json({ conversation,modelResponse, history });
-}
-catch(error){
-  console.log(error, "line 71 chat controller post method error ")
-  res.json({message:"post method error in ln 71"})
-}
 };
 
 //may be delete later
 const getMessage = async (req, res) => {
-  try{
+  try {
     const userId = req.user?.id || null;
     // if(!userId){
     //   return res.json([])
     // }
-  let conversation = await Conversation.find({ user: userId });
-  let allTitle = conversation.map((item) => ({
-    title: item.title,
-    conversationId: item._id,
-  }));
-  
-  res.json(allTitle);
-  }
-  catch{
-    console.log("chatController line 85 error")
-    res.json({message:"titles are empty"})
+    let conversation = await Conversation.find({ user: userId });
+    let allTitle = conversation.map((item) => ({
+      title: item.title,
+      conversationId: item._id,
+    }));
+
+    res.json(allTitle);
+  } catch {
+    console.log("chatController line 85 error");
+    res.json({ message: "titles are empty" });
   }
 };
 //   const { id } = req.params;

@@ -32,7 +32,7 @@ export default function AuthForm() {
         // console.log(res.data.user.username)
         setUserName(res.data.user.username)
         // setToken(res.data.token);
-        // setIsLogin(true);
+        setIsLogin(true);
         navigate("/");
       })
       .catch((data) => {
@@ -45,6 +45,11 @@ export default function AuthForm() {
     }
    
   };
+
+  // useEffect(() => {
+  //   console.log(isLogin)
+  // }, [isLogin])
+  
 
   return (
      <>

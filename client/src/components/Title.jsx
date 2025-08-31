@@ -5,24 +5,35 @@ import { IoPersonCircle } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context.jsx";
+import axios from "axios";
 
 export default function Title() {
-  const [token, setToken] = useState(
-    localStorage.getItem("gemini-token") || ""
-  );
-  const [isLogin, setIsLogin] = useState(token ? true : false);
-  const { userName, setUserName } = useContext(AuthContext);
+  // const [token, setToken] = useState(
+  //   localStorage.getItem("gemini-token") || ""
+  // );
+  // const [isLogin, setIsLogin] = useState(token ? true : false);
+  const { userName, setUserName ,isLogin, setIsLogin,token, setToken} = useContext(AuthContext);
   const navigate = useNavigate()
 
   useEffect(() => {
+    setToken(localStorage.getItem("gemini-token"))
+    // setIsLogin(token ? true : false);
+  }, []);
+  useEffect(() => {
+    // setToken(localStorage.getItem("gemini-token"))
     setIsLogin(token ? true : false);
   }, [token]);
 
-  const hadleLoginClick = () => {
+  const hadleLoginClick =async() => {
     if (token) {
-      localStorage.removeItem("gemini-token");
-      setToken("");
-      setIsLogin(false);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/user/logout`, {},{
+        withCredentials: true,
+      })
+      if(res.status === 200){
+        localStorage.removeItem("gemini-token");
+        setToken("");
+        setIsLogin(false);
+      }
     }else{
       navigate("/authForm")
     }
@@ -38,8 +49,9 @@ export default function Title() {
         role="Profile"
         onClick={hadleLoginClick}
       >
-        {isLogin ? `Log Out${userName}` : <IoPersonCircle />}
+        {isLogin ? `Log Out ` : <IoPersonCircle />}
       </button>
+      {/* ${userName} */}
     </div>
   );
 }
