@@ -60,7 +60,7 @@ export default function SlideBar({
 // bg-[#2f2f31]
   return (
     <>
-   <div className={`close-slider md:h-screen h-[10vh] flex flex-col  rounded-full mt-1 md:mt-0 opacity-75 ${isSlideOpen && "md:hidden flex"}`}>
+   <div className={`close-slider md:h-screen h-12 flex flex-col  rounded-full mt-1 md:mt-0 opacity-75 ${isSlideOpen && "md:hidden flex"}`}>
     <button className=" text-2xl mx-auto md:mt-4 my-auto md:my-0 cursor-pointer">
     <LuPanelRightClose onClick={()=>setIsSlideOpen(prev => !prev)}/>
     </button>
