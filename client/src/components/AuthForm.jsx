@@ -29,9 +29,7 @@ export default function AuthForm() {
       })
       .then((res) => {
         localStorage.setItem("gemini-token", res.data.token);
-        console.log(res.data.user.username)
         setUserName(res.data.user.username)
-        // setToken(res.data.token);
         setIsLogin(true);
         navigate("/");
       })
@@ -41,11 +39,13 @@ export default function AuthForm() {
       });
     }
     catch(err){
-        console.log("login" + err)
+      console.log("login" + err)
     }
-   
+    
   };
-
+  
+  // setToken(res.data.token);
+  // console.log(res.data.user.username)
   // useEffect(() => {
   //   console.log(isLogin)
   // }, [isLogin])

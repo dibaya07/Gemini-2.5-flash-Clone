@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const { GoogleGenAI } = require("@google/genai");
 const { generativeAIResponse } = require("../utility/generateTitle.js");
 const messages = require("../models/messages");
+const User = require("../models/user.js");
 
 const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
@@ -43,13 +44,13 @@ const sendMessage = async (req, res) => {
     const pastMessages = await Message.find({
       conversationId: conversation._id,
     }).sort({ createdAt: 1 });
-// console.log("ln 46 ", pastMessages)
+    // console.log("ln 46 ", pastMessages)
 
-const history = pastMessages.map((msg) => ({
-  role: msg.role === "user" ? "user" : "model",
-  parts: [{ text: msg.content }],
-}));
-// console.log("ln 52 ", history)
+    const history = pastMessages.map((msg) => ({
+      role: msg.role === "user" ? "user" : "model",
+      parts: [{ text: msg.content }],
+    }));
+    // console.log("ln 52 ", history)
 
     const result = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -72,42 +73,46 @@ const history = pastMessages.map((msg) => ({
 
     // console.log("line 73 modelres", modelResponse)
     // console.log("line 74 history", history)
-    console.log("sending response ...")
+    console.log("sending response ...");
     return res.json({ conversation, modelResponse, history });
   } catch (error) {
     console.log(error, "line 71 chat controller post method error ");
-    if(!res.headersSent){
+    if (!res.headersSent) {
       return res.status(500).json({ message: "post method error in ln 71" });
     }
   }
 };
 
 //may be delete later
+// console.log(req.user,"ln 82")
+// if(!userId){
+//   return res.json([])
+// }
 const getMessage = async (req, res) => {
-  // console.log(req.user,"ln 82")
   try {
-    if(req.user){
+    if (req.user) {
       const userId = req.user?.id || null;
-    // if(!userId){
-    //   return res.json([])
-    // }
-    let conversation = await Conversation.find({ user: userId });
-    let allTitle = conversation.map((item) => ({
-      title: item.title,
-      conversationId: item._id,
-    }));
-
-    return res.json(allTitle);
-    }else{
-     return res.json([])
-    // console.log("ln 103 empty title array")
+      const conversation = await Conversation.find({ user: userId });
+      const userDetails = await User.findById(userId);
+      const userName = userDetails ? userDetails.username : null;
+      console.log(userName)
+      let allTitle = conversation.map((item) => ({
+        title: item.title,
+        conversationId: item._id,
+      }));
+      return res.json({ allTitle, userName });
+    } else {
+      return res.json({ allTitle: [], userName: null });
     }
-    
   } catch {
     console.log("chatController line 85 error");
     res.json({ message: "titles are empty" });
   }
 };
+// console.log("ln 97" , userName)
+// console.log("ln 97" , "hello")
+// const userName = conversation.
+// console.log("ln 103 empty title array")
 //   const { id } = req.params;
 //   const pastMessages = await Message.find({
 //     conversationId: id,

@@ -20,7 +20,8 @@ export default function SlideBar({
   setConversationId,
   setIsOldHistory,
 }) {
-  const {userName, isLogin, isSlideOpen, setIsSlideOpen } = useContext(AuthContext);
+  const { userName, isLogin, isSlideOpen, setIsSlideOpen, setUserName } =
+    useContext(AuthContext);
 
   const handleNewChatClick = () => {
     setHistory([]);
@@ -33,7 +34,10 @@ export default function SlideBar({
     const res = await axios.get(`${import.meta.env.VITE_API_URL}/chat`, {
       withCredentials: true,
     });
-    setTitle(res.data);
+    setUserName(res.data.userName);
+    // console.log(res.data.allTitle)
+    // console.log(res.data.userName)
+    setTitle(res.data.allTitle);
   };
 
   useEffect(() => {
@@ -48,22 +52,27 @@ export default function SlideBar({
         setHistory(res.data);
         setIsOldHistory(true);
       });
+      setIsSlideOpen((prev) => !prev)
   };
 
-  const handleSlideBar = () => {
-    setIsSlideOpen(false);
-  };
+  // const handleSlideBar = () => {
+  //   setIsSlideOpen(false);
+  // };
   // bg-[#2f2f31]
   return (
     <>
       <div
         className={`close-slider md:h-screen h-12 flex flex-col  rounded-full mt-1 md:mt-0 opacity-75 ${
-          isSlideOpen && "md:hidden flex"
-        }`}
+          isSlideOpen ? "md:hidden " : ""
+        }
+        ${!isSlideOpen ? "hidden md:flex" : ""}
+       
+           `}
       >
         <button className=" text-2xl mx-auto md:mt-4 my-auto md:my-0 cursor-pointer">
           <LuPanelRightClose onClick={() => setIsSlideOpen((prev) => !prev)} />
         </button>
+        {/* {console.log(isSlideOpen)} */}
         <button
           className=" text-2xl mx-auto py-2 mt-4 cursor-pointer md:block hidden"
           onClick={handleNewChatClick}
@@ -73,18 +82,19 @@ export default function SlideBar({
       </div>
 
       <div
-        className={`h-screen md:flex hidden absolute md:static w-[90vw] md:w-auto z-10 md:z-auto flex-col bg-[#2f2f31] ${
-          !isSlideOpen && "hidden"
-        }`}
-      >
+        className={`h-screen  absolute md:static w-[90vw] md:w-auto z-10 md:z-auto flex-col bg-[#2f2f31] 
+          ${!isSlideOpen && "md:hidden flex"}
+          ${isSlideOpen && "md:flex hidden"}
+          `}>
         <div className="line1 flex justify-between mx-3 mt-2 md:m-4">
           <button className=" p-2 text-xl capitalize">
             {/* rounded-[50%] bg-[#3e3e3f] */}
-            {`${userName}`}
+            {userName || "Guest"}
+            {/* {console.log(userName)} */}
           </button>
           <button
             className="rounded-[50%] bg-[#3e3e3f] p-4 text-xl cursor-pointer"
-            onClick={handleSlideBar}
+            onClick={() => setIsSlideOpen((prev) => !prev)}
           >
             <LuPanelLeftClose />
           </button>
@@ -99,7 +109,7 @@ export default function SlideBar({
         </span>
         <span className="overflow-y-scroll h-96 ">
           <span className="font-light text-sm mx-0 opacity-85 inline-block w-full px-5">
-            Chats 
+            Chats
             {isLogin ? " " : "-(Need to login to save conversations)"}
           </span>
           <ul>
