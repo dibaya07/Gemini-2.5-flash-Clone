@@ -15,8 +15,12 @@ const messageSchema=mongoose.Schema({
     },
     content:{
         type:String,
-         required:true,
-    }
+        //  required:true,
+    },
+        image: {
+      type: String,
+    //   filename: String,
+    },
 },{timestapms:true})
 
 module.exports=mongoose.model("Message",messageSchema)

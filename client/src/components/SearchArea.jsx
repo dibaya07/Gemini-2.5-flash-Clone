@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { IoSend } from "react-icons/io5";
 import axios from "axios";
@@ -22,30 +22,50 @@ const SearchArea = ({
   setIsOldHistory,
 }) => {
 
-  const [isSubmit, setIsSubmit] = useState(false)
-  const [file, setFile] = useState(null)
-  const [previewFile, setPreviewFile] = useState(null)
-    const { showOption,setShowOption } = useContext(AuthContext);
+  
+  // const [file, setFile] = useState(null)
+    const { showOption,setShowOption,isSubmit,setIsSubmit,previewFile,setPreviewFile,file, setFile, isUploaded, setIsUploaded } = useContext(AuthContext);
 
   const handleChange = (e)=>{
     setShowOption(prev=>!prev)
-    let seletedFile =e.target.files[0]
-    setFile(seletedFile)
-    const url = URL.createObjectURL(seletedFile)
+    // console.dir(e.target.files[0])
+    // console.log(e.target.files[0])
+    let selectedFile =e.target.files[0]
+    // setIsUploaded(true)
+    // setFile(selectedFile ? selectedFile : "")
+    setFile(selectedFile || "")
+    const url = URL.createObjectURL(selectedFile)
     setPreviewFile(url)
+    // setIsSubmit(true)    
   }
-
-
+  
+  
   const handleclick = async () => {
     setRecentPrompt(userPrompt);
     setuserPrompt("");
-    setIsSubmit(true)
+    setIsSubmit(true)    
+    setIsUploaded(file ? true : false)
+    const formData = new FormData();
+    
+    if(userPrompt){
+      formData.append("userPrompt", userPrompt);
+    }
+    if(conversationId){
+      formData.append("conversationId", conversationId);
+    }
+    
+    if(file){
+      formData.append("file", file);
+    }
     await axios
-      .post(
-        `${import.meta.env.VITE_API_URL}/chat`,
-        { conversationId, userPrompt }, 
-        {
+    .post(
+      `${import.meta.env.VITE_API_URL}/chat`,
+      formData , 
+      {
           withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       )
       .then((res) => {
@@ -54,17 +74,35 @@ const SearchArea = ({
         }
         setConversationId(res.data.conversation._id);
         setRecentPrompt("");
+        setIsUploaded(false)
+        setFile(null)
+        setPreviewFile(null)
+    setIsSubmit(false)
         setHistory(res.data.history);
-        // console.log(res.data)
-        // setUserName(res.data.conversation.user.userName);
       });
-  };
+    };
+
+    // useEffect(() => {
+    //  console.log(isSubmit)
+    //  console.log(file)
+    // }, [isSubmit,file])
+    
+    // console.log(res.data)
+    // setUserName(res.data.conversation.user.userName);
+    // console.log("file", file,"previewFile", previewFile,"isSubmit",isSubmit)
+    // formData.append("conversationId", conversationId);
+    // formData.append("conversationId", null? JSON.stringify(conversationId) : conversationId;
+    // else{
+    //   formData.append("userPrompt", userPrompt);
+    //   formData.append("conversationId", conversationId);
+
+    // }
 
   return (
     <>
       <div className="h-fit w-full mx-2 md:mx-0 md:w-3/4 bg-transparent rounded-3xl border border-solid border-white text-white flex flex-col justify-center">
       {
-        previewFile && <div className="bg-red-500 overflow-hidden md:h-24 md:w-36 h-16 w-24 m-3 rounded-md relative">
+       !isSubmit && previewFile && <div className="bg-red-500 overflow-hidden md:h-24 md:w-36 h-16 w-24 m-3 rounded-md relative">
           <IoCloseSharp size={18} className="absolute top-0 right-0 m-2 bg-white text-black rounded-full" onClick={()=>setPreviewFile(null)}/>
           <img src={previewFile} alt="uploaded image" />
         </div>
@@ -75,12 +113,12 @@ const SearchArea = ({
             
             minRows={1}
             maxRows={5}
-            type="text"
             placeholder="enter your text"
             value={userPrompt}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault()
+                // console.log("enter pressed")
                 handleclick();
               }
             }}
@@ -101,7 +139,9 @@ const SearchArea = ({
               </label>
             </div>
           }
-          <button onClick={handleclick} className="md:mr-7 mr-2 text-2xl md:text-3xl">
+          <button onClick={handleclick} className="md:mr-7 mr-2 text-2xl md:text-3xl disabled:opacity-75 disabled:cursor-not-allowed" disabled={!userPrompt && !file}>
+             
+             
             <IoSend />
           </button>
         </div>

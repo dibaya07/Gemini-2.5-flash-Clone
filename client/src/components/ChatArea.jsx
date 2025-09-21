@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import "../../src/components/ChatArea.css";
 import ReactMarkdown from "react-markdown";
+import { useContext } from "react";
 
+import { AuthContext } from "./context.jsx";
 
 // function WordByWordText({ text, speed = 300 }) {
 //   const words = text.split(" ");
@@ -21,14 +23,11 @@ import ReactMarkdown from "react-markdown";
 //   return <>{displayedText.join(" ")}</>;
 // }
 
-export default function ChatArea({
-  history,
-  recentPrompt,
-  isOldHistory,
-}) {
+export default function ChatArea({ history, recentPrompt, isOldHistory }) {
   // useEffect(() => {
   //   setIsOldHistory(true)
   // }, [])
+  const { isSubmit, previewFile,file, setFile,isUploaded } = useContext(AuthContext);
 
   const bottomRef = useRef(null);
   useEffect(() => {
@@ -44,12 +43,23 @@ export default function ChatArea({
           // }
           return item.role === "user" ? (
             <div
-              className="flex justify-end px-4 py-2 md:w-3/4 w-[90vw]"
+              className="flex justify-end px-4 py-2 md:w-3/4 w-[90vw] flex-wrap"
               key={item._id || idx}
             >
-              <li className="text-white w-fit px-2 text-base font-normal bg-[#3e3e3f] text-end  flex-wrap">
+                {item.image &&  (
+               <div className="img flex justify-end">
+                  
+                  <img
+                    src={item.image}
+                    alt="uploaded image"
+                    className="h-auto w-1/4"
+                  />
+                {/* { isSubmit && file && console.log("file is selected")} */}
+              </div>
+                )}
+             {(item.content || item.parts[0].text) && <li className="text-white w-fit px-2 text-base font-normal bg-[#3e3e3f] text-end  flex-wrap">
                 {isOldHistory ? item.content : item.parts[0].text}
-              </li>
+              </li>}
             </div>
           ) : (
             <div
@@ -57,24 +67,37 @@ export default function ChatArea({
               key={item._id || idx}
             >
               <li className="text-white w-fit px-2 text-base font-normal   flex-wrap whitespace-pre-wrap">
-                <ReactMarkdown>{isOldHistory ? item.content : item.parts[0].text}</ReactMarkdown>
+                <ReactMarkdown>
+                  {isOldHistory ? item.content : item.parts[0].text}
+                </ReactMarkdown>
                 {/* <WordByWordText text={isOldHistory ? item.content : item.parts[0].text} speed={250} /> */}
                 {/* <WordByWordText text={item.parts[0].text} speed={250} /> */}
               </li>
             </div>
           );
         })}
-        {recentPrompt && (
+        {(recentPrompt || isUploaded) && (
           <>
-            <div className="flex justify-end px-4 py-2  md:w-3/4 w-[90vw]">
-              <li className="text-white w-fit px-2 text-base font-normal bg-[#3e3e3f] text-end  flex-wrap">
+            <div className="flex justify-end px-4 py-2  md:w-3/4 w-[90vw] flex-wrap">
+              <div className="img flex justify-end">
+                {isSubmit && file &&  (
+                  
+                  <img
+                    src={previewFile}
+                    alt="uploaded image"
+                    className="h-auto w-1/4"
+                  />
+                )}
+                {/* { isSubmit && file && console.log("file is selected")} */}
+              </div>
+             {recentPrompt && <div className="text-white w-fit px-2 text-base font-normal bg-[#3e3e3f] text-end  ">
                 {recentPrompt}
-              </li>
+              </div>}
             </div>
             <div className="flex justify-start px-4 py-2  md:w-3/4 w-[90vw]">
-              <li className="text-white w-fit px-2 text-base font-normal bg-[#3e3e3f]  flex-wrap">
+              <span className="text-white w-fit px-2 text-base font-normal bg-[#3e3e3f]  flex-wrap">
                 Thinking ...
-              </li>
+              </span>
             </div>
           </>
         )}

@@ -6,9 +6,12 @@ const {
   getMessage,
   allMessages,
 } = require("../controller/chatController");
+const multer = require("multer");
+// const { storage } = require("../cloudConfig.js");
+const upload = multer({ dest: "uploads/" });
 
 router.get("/", verifyToken, getMessage);
-router.post("/", verifyToken, sendMessage);
+router.post("/", verifyToken,upload.single("file"), sendMessage);
 router.post("/:id", allMessages);
 
 module.exports = router;
